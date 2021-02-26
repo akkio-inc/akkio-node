@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AbeAkkio/akkio-node.git"
+    "url": "git+https://github.com/akkio-inc/akkio-node.git"
   },
   "author": "Abraham Parangi",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AbeAkkio/akkio-node/issues"
+    "url": "https://github.com/akkio-inc/akkio-node/issues"
   },
-  "homepage": "https://github.com/AbeAkkio/akkio-node#readme"
+  "homepage": "https://github.com/akkio-inc/akkio-node#readme"
 }
