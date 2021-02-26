@@ -1,7 +1,7 @@
 # akkio-node
 
 ## Usage
-```
+```js
 (async () => {
   // create a new dataset
   let newDataset = await akkio.createDataset('my new dataset');
