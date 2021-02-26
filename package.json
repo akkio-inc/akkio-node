@@ -1,0 +1,19 @@
+{
+  "name": "akkio-node",
+  "version": "1.0.0",
+  "description": "Convenient access to the Akkio API from server-side javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbeAkkio/akkio-node.git"
+  },
+  "author": "Abraham Parangi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AbeAkkio/akkio-node/issues"
+  },
+  "homepage": "https://github.com/AbeAkkio/akkio-node#readme"
+}
