@@ -2,6 +2,7 @@
 
 ## Usage
 ```js
+const akkio = require('akkio')('<-your API key->');
 (async () => {
   // create a new dataset
   let newDataset = await akkio.createDataset('my new dataset');
