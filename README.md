@@ -1,8 +1,13 @@
 # akkio-node
 
-## Usage
+### Installation
+```bash
+npm install --save akkio
+```
+
+### Usage
 ```js
-const akkio = require('akkio')('your API key');
+const akkio = require('akkio')('your API key'); // get your API key at https://app.akk.io/team-settings
 
 (async () => {
   // create a new dataset
