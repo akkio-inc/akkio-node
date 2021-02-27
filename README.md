@@ -1,13 +1,14 @@
 # akkio-node
 
-### Installation
+## Installation
 ```bash
 npm install --save akkio
 ```
 
-### Usage
+## Usage
 ```js
-const akkio = require('akkio')('your API key'); // get your API key at https://app.akk.io/team-settings
+// get your API key at https://app.akk.io/team-settings
+const akkio = require('akkio')('your API key');
 
 (async () => {
   // create a new dataset
