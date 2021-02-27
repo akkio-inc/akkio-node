@@ -1,6 +1,6 @@
 {
   "name": "akkio",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Convenient access to the Akkio API from server-side javascript",
   "main": "index.js",
   "scripts": {

@@ -41,7 +41,9 @@ const akkio = require('akkio')('your API key');
     'x': 0.25
   }, {
     'x': 0.75
-  }]);
+  }], {
+    explain: true
+  });
   console.log(predictions);
 
 })();

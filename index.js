@@ -63,6 +63,7 @@ class Akkio {
       api_key: this.API_KEY
     });
   }
+
   getDataset(id) {
     return this.request('GET', '/v1/datasets', {
       api_key: this.API_KEY,
@@ -117,12 +118,16 @@ class Akkio {
     return this.request('POST', '/v1/models', requestParams);
   }
 
-  makePrediction(id, data) {
-    return this.request('POST', '/v1/models', {
+  makePrediction(id, data, params) {
+    let requestParams = {
       api_key: this.API_KEY,
       id: id,
       data: data
-    });
+    };
+    if (params) {
+      Object.assign(requestParams, params);
+    }
+    return this.request('POST', '/v1/models', requestParams);
   }
 }
 
