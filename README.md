@@ -1,4 +1,5 @@
-# akkio-node
+# Akkio
+Convenient access to the [Akkio](https://www.akkio.com) API from server-side javascript.
 
 ## Installation
 ```bash
