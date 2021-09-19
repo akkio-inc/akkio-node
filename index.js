@@ -1,35 +1,31 @@
 const https = require('https');
 class Akkio {
-  constructor(key) {
-    this.API_KEY = key;
-    this.PORT = 443;
-    this.URL = 'api.akk.io';
-  }
-  request(method, address, params) {
-    return new Promise((resolve, reject) => {
-      let paramStrings = [];
-      for (let k in params) {
-        paramStrings.push(`${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`);
+  constructor(api_key) {
+    this.request = (method, url, params) => new Promise((resolve, reject) => {
+      params = Object.assign({
+        api_key
+      }, params)
+
+      const data = method === 'GET' ? '' : JSON.stringify(params)
+      const options = {
+        hostname: 'api.akk.io',
+        port: 443,
+        path: `${url}${method === 'GET' ? `?${
+          Object.entries(params)
+            .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+            .join('&')
+      }` : ''}`,
+        method,
+        ...!!data
+          ? {
+            headers: {
+              'Content-Type': 'application/json',
+              'Content-Length': data.length
+            }
+          }
+          : {}
       }
-      let queryString = '';
-      let postData = '';
-      if (method == 'GET') {
-        queryString = `?${paramStrings.join('&')}`;
-      } else {
-        postData = JSON.stringify(params);
-      }
-      let options = {
-        hostname: this.URL,
-        port: this.PORT,
-        path: `${address}${queryString}`,
-        method: method
-      };
-      if (method != 'GET') {
-        options.headers = {
-          'Content-Type': 'application/json',
-          'Content-Length': postData.length
-        }
-      }
+
       let s = '';
       const req = https.request(options, res => {
         res.on('data', d => {
@@ -39,97 +35,39 @@ class Akkio {
         });
       });
       req.on('error', error => {
-        console.error(error)
+        reject(new Error(error))
       });
-      req.write(postData);
+      req.write(data);
       req.end();
     });
   }
-  getModels() {
-    return this.request('GET', '/v1/models', {
-      api_key: this.API_KEY
-    });
+
+  datasets = {
+    list: () => this.request('GET', '/v1/datasets'),
+    get: (id) => this.request('GET', '/v1/datasets', { id }),
+    create: (name) => this.request('POST', '/v1/datasets', { name }),
+    delete: (id) => this.request('DELETE', '/v1/datasets', { id }),
+    update: (id, { rows, parse_fields, fields }) => this.request('POST', '/v1/datasets', { id, rows, parse_fields, fields })
   }
 
-  deleteModel(id) {
-    return this.request('DELETE', '/v1/models', {
-      api_key: this.API_KEY,
-      id: id
-    });
-  }
-
-  getDatasets() {
-    return this.request('GET', '/v1/datasets', {
-      api_key: this.API_KEY
-    });
-  }
-
-  getDataset(id) {
-    return this.request('GET', '/v1/datasets', {
-      api_key: this.API_KEY,
-      id: id
-    });
-  }
-
-
-  createDataset(name) {
-    return this.request('POST', '/v1/datasets', {
-      api_key: this.API_KEY,
-      name: name
-    });
-  }
-
-  deleteDataset(id) {
-    return this.request('DELETE', '/v1/datasets', {
-      api_key: this.API_KEY,
-      id: id
-    });
-  }
-
-  addRowsToDataset(id, rows) {
-    return this.request('POST', '/v1/datasets', {
-      api_key: this.API_KEY,
-      id: id,
-      rows: rows
-    });
-  }
-
-  parseDataset(id) {
-    return this.request('POST', '/v1/datasets', {
-      api_key: this.API_KEY,
-      id: id,
-      parse_fields: true
-    });
-  }
-
-  createModel(id, predict_fields, ignore_fields, params) {
-    ignore_fields = ignore_fields || [];
-    let requestParams = {
-      api_key: this.API_KEY,
-      dataset_id: id,
-      predict_fields: predict_fields,
-      ignore_fields: ignore_fields,
-      extra_attention: false,
-      duration: 10
-    };
-    if (params) {
-      Object.assign(requestParams, params);
-    }
-    return this.request('POST', '/v1/models', requestParams);
-  }
-
-  makePrediction(id, data, params) {
-    let requestParams = {
-      api_key: this.API_KEY,
-      id: id,
-      data: data
-    };
-    if (params) {
-      Object.assign(requestParams, params);
-    }
-    return this.request('POST', '/v1/models', requestParams);
+  models = {
+    list: () => this.request('GET', '/v1/models'),
+    create: ({
+      dataset_id,
+      predict_fields,
+      ignore_fields = [],
+      extra_attention = false,
+      duration = 10
+    }) => this.request('POST', '/v1/models', {
+      dataset_id,
+      predict_fields,
+      ignore_fields,
+      extra_attention,
+      duration
+    }),
+    delete: (id) => this.request('DELETE', '/v1/models', { id }),
+    predict: (id, data) => this.request('POST', '/v1/models', { id, data }),
   }
 }
-
 
 module.exports = key => new Akkio(key);
