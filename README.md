@@ -13,45 +13,49 @@ const akkio = require('akkio')('your API key');
 
 (async () => {
   // create a new dataset
-  let newDataset = await akkio.createDataset('my new dataset');
+  const { dataset_id } = await akkio.datasets.create('my new dataset');
 
   // populate it with some toy data
-  let rows = [];
-  for (var i = 0; i < 1000; i++) {
-    let x = Math.random();
-    rows.push({
-      'x': x,
+  const rows = Array.from(new Array(1000)).map(() => {
+    const x = Math.random();
+
+    return {
+      x,
       'value larger than 0.5': x > 0.5,
-    });
-  }
-  await akkio.addRowsToDataset(newDataset.dataset_id, rows);
+    }
+  })
+
+  await akkio.datasets.update(dataset_id, {
+    rows
+  })
 
   // train a model
-  let model = await akkio.createModel(newDataset.dataset_id, ['value larger than 0.5'], [], {
+  const model = await akkio.models.create({
+    dataset_id,
+    predict_fields: ['value larger than 0.5'],
+    ignore_fields: [],
+    extra_attention: false,
     duration: 1
-  });
+  })
 
   // field importance
-  for (let field in model.field_importance) {
+  for (const field in model.field_importance) {
     console.log('field:', field, 'importance:', model.field_importance[field]);
   }
 
   // model stats
-  for (let field of model.stats) {
-    for (let outcome of field) {
+  for (const field of model.stats) {
+    for (const outcome of field) {
       console.log(outcome);
     }
   }
 
   // use the trained model to make predictions
-  let predictions = await akkio.makePrediction(model.model_id, [{
-    'x': 0.25
-  }, {
-    'x': 0.75
-  }], {
-    explain: true
-  });
-  console.log(predictions);
+  const predictions = await akkio.models.predict(model.model_id, [
+    { x: 0.25 },
+    { x: 0.75 },
+  ])
 
+  console.log(predictions);
 })();
 ```
